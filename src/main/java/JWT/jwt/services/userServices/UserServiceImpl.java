@@ -8,6 +8,7 @@ import JWT.jwt.dto.userDto.EditUserDto;
 import JWT.jwt.dto.userDto.GetUserDto;
 import JWT.jwt.entities.RoleEntity;
 import JWT.jwt.entities.UserEntity;
+import JWT.jwt.exceptionsConfig.exceptions.BadRequestException;
 import JWT.jwt.mappers.roleMappers.GetRoleByIdMapper;
 import JWT.jwt.mappers.userMappers.GetUserMapper;
 import JWT.jwt.utils.wordFormat.WordFormat;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,6 +70,9 @@ public class UserServiceImpl implements UserService {
 
         try {
             role = roleDao.findRoleByIdDao(createUserReq.getRoleIdDto());
+            if (Objects.isNull(role)) {
+                throw new BadRequestException("Id ".concat(String.valueOf(createUserReq.getRoleIdDto())));
+            }
             roleDto = getRoleNameMapper.roleEntityNameToGetRoleByIdDto(role);
 
             userDao.createUserDao(createUserReq, roleDto);
@@ -90,12 +95,15 @@ public class UserServiceImpl implements UserService {
 
         try {
             role = roleDao.findRoleByIdDao(editUserReq.getRoleIdDto());
+            if (Objects.isNull(role)) {
+                throw new BadRequestException("Id ".concat(String.valueOf(editUserReq.getRoleIdDto())));
+            }
             roleDto = getRoleNameMapper.roleEntityNameToGetRoleByIdDto(role);
-
             userDao.editUserDao(editUserReq, roleDto);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         return editUserReq.getUserNameDto();
     }
 }
