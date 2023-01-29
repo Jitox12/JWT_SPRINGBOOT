@@ -1,7 +1,9 @@
 package JWT.jwt.dao.userDao;
 
 import JWT.jwt.dao.roleDao.RoleDao;
-import JWT.jwt.dto.userDto.UserRequestDto;
+import JWT.jwt.dto.roleDto.GetRoleByIdDto;
+import JWT.jwt.dto.userDto.CreateUserDto;
+import JWT.jwt.dto.userDto.EditUserDto;
 import JWT.jwt.entities.RoleEntity;
 import JWT.jwt.entities.UserEntity;
 import org.springframework.stereotype.Component;
@@ -23,61 +25,44 @@ public class UserDaoImpl implements UserDao {
 
 
     @Override
-    public UserEntity findUserByIdDao(Integer userId) {
-        try {
-            UserEntity user = userRepository.findByUserId(userId);
-            return user;
-        } catch (Error e) {
-            throw new RuntimeException();
-        }
+    public UserEntity findUserByIdDao(Integer userId) throws IOException {
+        UserEntity user = userRepository.findByUserId(userId);
+        return user;
     }
 
     @Override
-    public List<UserEntity> findUserListDao() {
-        try {
-            List<UserEntity> userList = userRepository.findAll();
-            return userList;
-        } catch (Error e) {
-            throw new RuntimeException();
-        }
+    public List<UserEntity> findUserListDao() throws IOException{
+        List<UserEntity> userList = userRepository.findAll();
+        return userList;
     }
 
     @Override
-    public void createUserDao(UserRequestDto userReq)  {
-        try {
-            RoleEntity role = roleDao.findRoleByIdDao(userReq.getRoleIdDto());
+    public void createUserDao(CreateUserDto createUserReq, GetRoleByIdDto roleDto) throws IOException{
+        RoleEntity role = RoleEntity.builder().role(roleDto.getRoleDto()).roleId(roleDto.getRoleIdDto()).build();
 
-            UserEntity user = UserEntity.builder()
-                    .userName(userReq.getUserNameDto())
-                    .userLastName(userReq.getUserLastNameDto())
-                    .email(userReq.getEmailDto())
-                    .password(userReq.getPasswordDto())
-                    .role(role)
-                    .build();
-            userRepository.save(user);
+        UserEntity user = UserEntity.builder()
+                .userName(createUserReq.getUserNameDto())
+                .userLastName(createUserReq.getUserLastNameDto())
+                .email(createUserReq.getEmailDto())
+                .password(createUserReq.getPasswordDto())
+                .role(role)
+                .build();
 
-        }catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        userRepository.save(user);
     }
 
     @Override
-    public void editUserDao(UserRequestDto userReq) {
-        RoleEntity role = null;
-        try {
-            role = roleDao.findRoleByIdDao(userReq.getRoleIdDto());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void editUserDao(EditUserDto editUserReq, GetRoleByIdDto roleDto) throws IOException {
+        RoleEntity role = RoleEntity.builder().role(roleDto.getRoleDto()).roleId(roleDto.getRoleIdDto()).build();
 
-            UserEntity user = UserEntity.builder()
-                    .userId(userReq.getUserIdDto())
-                    .userName(userReq.getUserNameDto())
-                    .userLastName(userReq.getUserLastNameDto())
-                    .email(userReq.getEmailDto())
-                    .password(userReq.getPasswordDto())
-                    .role(role)
-                    .build();
+        UserEntity user = UserEntity.builder()
+                .userId(editUserReq.getUserIdDto())
+                .userName(editUserReq.getUserNameDto())
+                .userLastName(editUserReq.getUserLastNameDto())
+                .email(editUserReq.getEmailDto())
+                .password(editUserReq.getPasswordDto())
+                .role(role)
+                .build();
         userRepository.save(user);
     }
 }

@@ -1,11 +1,14 @@
 package JWT.jwt.controllers;
 
-import JWT.jwt.dto.userDto.UserRequestDto;
-import JWT.jwt.dto.userDto.UserResponseDto;
+import JWT.jwt.dto.userDto.CreateUserDto;
+import JWT.jwt.dto.userDto.EditUserDto;
+import JWT.jwt.dto.userDto.GetUserDto;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import JWT.jwt.services.userServices.UserService;
 
+import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,40 +21,30 @@ public class UserController {
     }
 
 
-    @GetMapping(value ="/api/users")
-    public List<UserResponseDto> findAllUsers(){
-        List<UserResponseDto> userRes = userService.findUserListService();
-
+    @GetMapping(value = "/api/find-users")
+    public List<GetUserDto> findAllUsers() throws IOException {
+        List<GetUserDto> userRes = userService.findUserListService();
         return userRes;
     }
 
-    @GetMapping(value = "/api/user/{userId}")
-    public UserResponseDto findAllUsers(@PathVariable Integer userId){
-       try{
-           UserResponseDto userReq = userService.findUserByIdService(userId);
-           return userReq;
-       }catch (Error e){
-           throw new RuntimeException();
-       }
+    @GetMapping(value = "/api/find-user/{userId}")
+    public GetUserDto findAllUsers(@PathVariable(required = true)  Integer userId) throws IOException {
+        GetUserDto userReq = userService.findUserByIdService(userId);
+        return userReq;
     }
 
     @Transactional
     @PostMapping(value = "/api/create-user")
-    public void createUser(@RequestBody UserRequestDto userReq){
-        try{
-            userService.createUserService(userReq);
-        }catch (Error e){
-            throw new RuntimeException();
-        }
+    public String createUser(@RequestBody @Valid CreateUserDto createUserReq) throws IOException {
+        String user = userService.createUserService(createUserReq);
+        return "Se ha creado el usuario ".concat(user);
+
     }
 
     @Transactional
     @PutMapping(value = "/api/edit-user/{userId}")
-    public void editUser(@PathVariable Integer userId, @RequestBody UserRequestDto userReq){
-        try{
-            userService.editUserService(userId, userReq);
-        }catch (Error e){
-            throw new RuntimeException();
-        }
+    public String editUser(@PathVariable(required = true) Integer userId, @RequestBody @Valid EditUserDto editUserReq) throws IOException{
+        userService.editUserService(userId, editUserReq);
+        return "Se ha editado el rol con Id ".concat(String.valueOf(userId));
     }
 }

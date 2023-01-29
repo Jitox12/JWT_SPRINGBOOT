@@ -1,14 +1,14 @@
 package JWT.jwt.controllers;
 
-import JWT.jwt.dto.roleDto.RoleDto;
-import JWT.jwt.dto.roleDto.RoleRequestDto;
-import JWT.jwt.dto.roleDto.RoleResponseDto;
+import JWT.jwt.dto.roleDto.CreateRoleDto;
+import JWT.jwt.dto.roleDto.EditRoleDto;
+import JWT.jwt.dto.roleDto.GetRoleDto;
+import JWT.jwt.dto.roleDto.GetRoleNameDto;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import JWT.jwt.repositories.RoleRepository;
 import JWT.jwt.services.roleServices.RoleService;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -24,35 +24,30 @@ public class RoleController {
         this.roleService = roleService;
     }
 
-    @GetMapping(value="api/find-role/{roleId}")
-    public RoleResponseDto findOneRole(@PathVariable(required = true) Integer roleId) throws IOException, HttpClientErrorException {
-        RoleResponseDto role = null;
-        try{
-            role = roleService.findRoleByIdService(roleId);
-        }catch (IOException e){
-            throw new IOException(e);
-        }
-            return role;
-    }
-
-    @GetMapping(value="api/find-roles")
-    public List<RoleDto> findRoleList(){
-        List<RoleDto> role = roleService.findRoleListService();
+    @GetMapping(value = "api/find-role/{roleId}")
+    public GetRoleDto findOneRole(@PathVariable(required = true) @Valid Integer roleId) throws IOException {
+        GetRoleDto role = null;
+        role = roleService.findRoleByIdService(roleId);
         return role;
     }
 
+    @GetMapping(value = "api/find-roles")
+    public List<GetRoleNameDto> findRoleList()  throws IOException{
+        List<GetRoleNameDto> role = roleService.findRoleListService();
+        return role;
+    }
+    @Transactional
     @PostMapping(value = "api/create-role")
-    public void createRole(@Valid @RequestBody RoleRequestDto roleDto){
-        try {
-            roleService.createRoleService(roleDto);
-        }catch (Error e){
-            throw new RuntimeException();
-        }
+    public String createRole(@RequestBody @Valid CreateRoleDto createRoleDto ) throws IOException{
+        String role = roleService.createRoleService(createRoleDto);
+        return "Se ha creado el rol ".concat(role);
     }
 
     @Transactional
     @PutMapping(value = "api/edit-role/{roleId}")
-    public void editRole(@RequestBody RoleRequestDto roleReq, @PathVariable Integer roleId){
-        roleService.editRoleService(roleId, roleReq);
+    public String editRole(@RequestBody @Valid EditRoleDto editRoleReq, @PathVariable(required = true) Integer roleId) throws IOException {
+        String role = roleService.editRoleService(roleId, editRoleReq);
+
+        return "Se ha editado el rol con Id ".concat(String.valueOf(roleId));
     }
 }

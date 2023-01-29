@@ -1,17 +1,17 @@
 package JWT.jwt.services.userServices;
 
-import JWT.jwt.dto.userDto.UserRequestDto;
-import JWT.jwt.dto.userDto.UserResponseDto;
-import JWT.jwt.entities.UserEntity;
+import JWT.jwt.dto.userDto.CreateUserDto;
+import JWT.jwt.dto.userDto.EditUserDto;
+import JWT.jwt.dto.userDto.GetUserDto;
 
 import java.util.List;
 
 public interface UserService {
 
-    public UserResponseDto findUserByIdService(Integer userId);
-    public List<UserResponseDto> findUserListService();
+    public GetUserDto findUserByIdService(Integer userId);
+    public List<GetUserDto> findUserListService();
 
-    public void createUserService(UserRequestDto userReq);
+    public String createUserService(CreateUserDto createUserReq);
 
-    public void editUserService(Integer userId, UserRequestDto userReq);
+    public String editUserService(Integer userId, EditUserDto editUserReq);
 }

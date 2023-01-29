@@ -1,19 +1,18 @@
 package JWT.jwt.services.roleServices;
 
-import JWT.jwt.dto.roleDto.RoleDto;
-import JWT.jwt.dto.roleDto.RoleRequestDto;
-import JWT.jwt.dto.roleDto.RoleResponseDto;
-import JWT.jwt.entities.RoleEntity;
+import JWT.jwt.dto.roleDto.CreateRoleDto;
+import JWT.jwt.dto.roleDto.EditRoleDto;
+import JWT.jwt.dto.roleDto.GetRoleDto;
+import JWT.jwt.dto.roleDto.GetRoleNameDto;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface RoleService {
 
-    public RoleResponseDto findRoleByIdService(Integer roleId) throws IOException;
-    public List<RoleDto> findRoleListService();
+    public GetRoleDto findRoleByIdService(Integer roleId);
+    public  List<GetRoleNameDto> findRoleListService();
 
-    public void createRoleService(RoleRequestDto roleReq);
+    public String createRoleService(CreateRoleDto createRoleReq);
 
-    public void editRoleService(Integer roleId, RoleRequestDto roleReq);
+    public String editRoleService(Integer roleId, EditRoleDto editRoleReq);
 }

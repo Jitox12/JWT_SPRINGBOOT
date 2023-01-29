@@ -1,7 +1,7 @@
 package JWT.jwt.dao.roleDao;
 
-import JWT.jwt.dto.roleDto.RoleDto;
-import JWT.jwt.dto.roleDto.RoleRequestDto;
+import JWT.jwt.dto.roleDto.CreateRoleDto;
+import JWT.jwt.dto.roleDto.EditRoleDto;
 import JWT.jwt.entities.RoleEntity;
 
 import java.io.IOException;
@@ -11,7 +11,7 @@ public interface RoleDao {
 
     public RoleEntity findRoleByIdDao(Integer roleId) throws IOException;
     public List<RoleEntity> findRoleListDao() throws IOException;
-    public void createRole(RoleRequestDto roleDto) throws IOException;
-    public void editRole(RoleRequestDto roleDto) throws IOException;
+    public void createRole(CreateRoleDto createRoleDto) throws IOException;
+    public void editRole(EditRoleDto editRoleDto) throws IOException;
 
 }

@@ -1,6 +1,5 @@
 package JWT.jwt.utils.wordFormat;
 
-
 public class WordFormat {
 
     public static String UpperCase(String value) {

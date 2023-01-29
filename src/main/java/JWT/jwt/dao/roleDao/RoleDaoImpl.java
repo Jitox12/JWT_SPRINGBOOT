@@ -1,11 +1,11 @@
 package JWT.jwt.dao.roleDao;
 
-import JWT.jwt.dto.roleDto.RoleRequestDto;
+import JWT.jwt.dto.roleDto.CreateRoleDto;
+import JWT.jwt.dto.roleDto.EditRoleDto;
 import JWT.jwt.entities.RoleEntity;
 import org.springframework.stereotype.Component;
 import JWT.jwt.repositories.RoleRepository;
 
-import javax.management.relation.Role;
 import java.io.IOException;
 import java.util.List;
 
@@ -21,13 +21,7 @@ public class RoleDaoImpl implements RoleDao {
     @Override
     public RoleEntity findRoleByIdDao(Integer roleId) throws IOException {
         RoleEntity role = null;
-
-        try {
-            role = roleRepository.findByRoleId(roleId);
-
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        role = roleRepository.findByRoleId(roleId);
         return role;
 
     }
@@ -35,40 +29,28 @@ public class RoleDaoImpl implements RoleDao {
     @Override
     public List<RoleEntity> findRoleListDao() throws IOException {
         List<RoleEntity> roleList = null;
-        try {
-            roleList = roleRepository.findAll();
-
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        roleList = roleRepository.findAll();
         return roleList;
     }
 
     @Override
-    public void createRole(RoleRequestDto roleDto) throws IOException {
+    public void createRole(CreateRoleDto createRoleDto) throws IOException {
         RoleEntity role = null;
-        try {
-            role = RoleEntity.builder()
-                    .role(roleDto.getRoleDto())
-                    .build();
-            roleRepository.save(role);
 
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        role = RoleEntity.builder()
+                .role(createRoleDto.getRoleDto())
+                .build();
+        roleRepository.save(role);
+
     }
 
     @Override
-    public void editRole(RoleRequestDto roleDto) throws IOException {
+    public void editRole(EditRoleDto editRoleDto) throws IOException {
         RoleEntity role = null;
-        try {
-            role = new RoleEntity().builder()
-                    .roleId(roleDto.getRoleIdDto())
-                    .role(roleDto.getRoleDto()).build();
-            roleRepository.save(role);
 
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        role = new RoleEntity().builder()
+                .roleId(editRoleDto.getRoleIdDto())
+                .role(editRoleDto.getRoleDto()).build();
+        roleRepository.save(role);
     }
 }
