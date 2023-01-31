@@ -11,7 +11,8 @@ import JWT.jwt.entities.UserEntity;
 import JWT.jwt.exceptionsConfig.exceptions.BadRequestException;
 import JWT.jwt.mappers.roleMappers.GetRoleByIdMapper;
 import JWT.jwt.mappers.userMappers.GetUserMapper;
-import JWT.jwt.utils.wordFormat.WordFormat;
+import JWT.jwt.utils.wordFormat.PasswordEncodeUtils;
+import JWT.jwt.utils.wordFormat.WordFormatUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -38,8 +39,12 @@ public class UserServiceImpl implements UserService {
     public GetUserDto findUserByIdService(Integer userId) {
         try {
             UserEntity user = userDao.findUserByIdDao(userId);
-            GetUserDto userDto = getUserMapper.userEntityToGetUserDto(user);
 
+            if(Objects.isNull(user)){
+                throw new BadRequestException("User does not exist");
+            }
+
+            GetUserDto userDto = getUserMapper.userEntityToGetUserDto(user);
             return userDto;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -50,6 +55,11 @@ public class UserServiceImpl implements UserService {
     public List<GetUserDto> findUserListService() {
         try {
             List<UserEntity> user = userDao.findUserListDao();
+
+            if(Objects.isNull(user)){
+                throw new BadRequestException("User List does not exist");
+            }
+
             List<GetUserDto> userRes = user.stream().map(getUserMapper::userEntityToGetUserDto).collect(Collectors.toList());
             return userRes;
         } catch (IOException e) {
@@ -62,11 +72,21 @@ public class UserServiceImpl implements UserService {
         RoleEntity role = null;
         GetRoleByIdDto roleDto = null;
 
-        String userNameUpperCase = WordFormat.UpperCase(createUserReq.getUserNameDto());
-        String userLastNameUpperCase = WordFormat.UpperCase(createUserReq.getUserLastNameDto());
+        //Mayus first Key
+        String userNameUpperCase = WordFormatUtils.UpperCase(createUserReq.getUserNameDto());
+        String userLastNameUpperCase = WordFormatUtils.UpperCase(createUserReq.getUserLastNameDto());
 
+        //Encode Password
+        String encodePassword = PasswordEncodeUtils.passwordEncoder().encode(createUserReq.getPasswordDto());
+
+        //LowerCase Email
+        String emailLowerCase = createUserReq.getEmailDto().toLowerCase();
+
+        //Set new Values
         createUserReq.setUserNameDto(userNameUpperCase);
         createUserReq.setUserLastNameDto(userLastNameUpperCase);
+        createUserReq.setPasswordDto(encodePassword);
+        createUserReq.setEmailDto(emailLowerCase);
 
         try {
             role = roleDao.findRoleByIdDao(createUserReq.getRoleIdDto());
@@ -87,11 +107,20 @@ public class UserServiceImpl implements UserService {
         RoleEntity role = null;
         GetRoleByIdDto roleDto = null;
 
-        String userNameUpperCase = WordFormat.UpperCase(editUserReq.getUserNameDto());
-        String userLastNameUpperCase = WordFormat.UpperCase(editUserReq.getUserLastNameDto());
+        //Mayus first Key
+        String userNameUpperCase = WordFormatUtils.UpperCase(editUserReq.getUserNameDto());
+        String userLastNameUpperCase = WordFormatUtils.UpperCase(editUserReq.getUserLastNameDto());
 
+        //Encode Password
+        String encodePassword = PasswordEncodeUtils.passwordEncoder().encode(editUserReq.getPasswordDto());
+
+        //LowerCase Email
+        String emailLowerCase = editUserReq.getEmailDto().toLowerCase();
+
+        //Set new Values
         editUserReq.setUserNameDto(userNameUpperCase);
         editUserReq.setUserLastNameDto(userLastNameUpperCase);
+        editUserReq.setPasswordDto(encodePassword);
 
         try {
             role = roleDao.findRoleByIdDao(editUserReq.getRoleIdDto());

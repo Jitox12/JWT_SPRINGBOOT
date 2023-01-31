@@ -6,13 +6,15 @@ import JWT.jwt.dto.roleDto.EditRoleDto;
 import JWT.jwt.dto.roleDto.GetRoleDto;
 import JWT.jwt.dto.roleDto.GetRoleNameDto;
 import JWT.jwt.entities.RoleEntity;
+import JWT.jwt.exceptionsConfig.exceptions.BadRequestException;
 import JWT.jwt.mappers.roleMappers.GetRoleNameMapper;
 import JWT.jwt.mappers.roleMappers.GetRoleUserMapper;
-import JWT.jwt.utils.wordFormat.WordFormat;
+import JWT.jwt.utils.wordFormat.WordFormatUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +37,9 @@ public class RoleServiceImpl implements RoleService {
 
         try {
             role = roleDao.findRoleByIdDao(roleId);
+            if(Objects.isNull(role)){
+                throw new BadRequestException("Role Is Empty");
+            }
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -56,7 +61,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public String createRoleService(CreateRoleDto createRoleReq) {
-        String upperCaseRoleName = WordFormat.UpperCase(createRoleReq.getRoleDto());
+        String upperCaseRoleName = WordFormatUtils.UpperCase(createRoleReq.getRoleDto());
         createRoleReq.setRoleDto(upperCaseRoleName);
         try {
             roleDao.createRole(createRoleReq);
@@ -69,8 +74,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public String editRoleService(Integer roleId, EditRoleDto editRoleReq) {
         try {
-
-            String upperCaseRoleName = WordFormat.UpperCase(editRoleReq.getRoleDto());
+            String upperCaseRoleName = WordFormatUtils.UpperCase(editRoleReq.getRoleDto());
             editRoleReq.setRoleDto(upperCaseRoleName);
             editRoleReq.setRoleIdDto(roleId);
 

@@ -1,6 +1,6 @@
 package JWT.jwt.utils.wordFormat;
 
-public class WordFormat {
+public class WordFormatUtils {
 
     public static String UpperCase(String value) {
         String[] splitValue = value.split(" ");
