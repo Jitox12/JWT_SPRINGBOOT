@@ -7,21 +7,19 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import javax.management.relation.Role;
-
 @Mapper(componentModel = "spring")
-public interface GetUserJwtMapper {
+public interface GetAuthMapper {
 
-    GetUserJwtMapper INSTANCE = Mappers.getMapper( GetUserJwtMapper.class );
+    GetAuthMapper INSTANCE = Mappers.getMapper( GetAuthMapper.class );
 
-    default Integer RoleToRoleId(RoleEntity role){
-        return role.getRoleId();
+    default String RoleToRoleName(RoleEntity role){
+        return role.getRole();
     }
 
     @Mapping(source = "userName", target = "userNameDto" )
     @Mapping(source = "userLastName", target = "userLastNameDto" )
     @Mapping(source = "email", target = "emailDto" )
-    @Mapping(source = "role", target = "roleIdDto" )
+    @Mapping(source = "role", target = "roleNameDto" )
     @Mapping(source = "password", target = "passwordDto" )
 
     AuthDto userEntityToUserJwtDto(UserEntity user);

@@ -22,6 +22,7 @@ public class AuthDto extends UserDto {
     @Size(min = 5, message = "Min Size 5")
     private String passwordDto;
 
-    @NotNull(message = "RoleId Is Null")
-    private Integer roleIdDto;
+    @NotNull(message = "roleName Is Null")
+    @NotEmpty(message = "roleName Is Empty")
+    private String roleNameDto;
 }

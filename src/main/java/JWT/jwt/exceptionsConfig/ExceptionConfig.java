@@ -1,7 +1,9 @@
 package JWT.jwt.exceptionsConfig;
 
 import JWT.jwt.exceptionsConfig.exceptions.BadRequestException;
+import JWT.jwt.exceptionsConfig.exceptions.ForbiddenException;
 import JWT.jwt.exceptionsConfig.exceptions.NotFoundException;
+import JWT.jwt.exceptionsConfig.exceptions.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,4 +40,45 @@ public class ExceptionConfig {
     public ErrorMessage badRequestException(HttpServletRequest request, Exception exception){
         return new ErrorMessage(exception, request.getRequestURI());
     }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler({ForbiddenException.class})
+    @ResponseBody
+    public ErrorMessage forbiddenRequest(HttpServletRequest request, Exception exception){
+        return new ErrorMessage(exception,request.getRequestURI());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler({
+            UnauthorizedException.class,
+            org.springframework.security.access.AccessDeniedException.class
+    })
+    public void unauthorized(){
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler({Exception.class})
+    public ErrorMessage fatalErrorUnexpectedException(HttpServletRequest request, Exception exception){
+        return new ErrorMessage(exception, request.getRequestURI());
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
